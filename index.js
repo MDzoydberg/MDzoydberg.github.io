@@ -15,52 +15,51 @@ function startTest (){ //запуск теста
 		stageId = 1, //Стадия решения: 1 - первая стрелка 1 инпут, 2 - вторая стрелка второй импут,  3- ввести ответ. 
 		resultVerification = false; //Результат проверки решения
 
-	function NextStage(stageId) { //функция запускающая стадии
-		var start, 
-			shift,
-			element,
-			type,
-			answer = 0;
+	function NextStage(stageId) { //Функция запускающая стадии решения 
+		var start,  //Длина первой стрелки
+			shift,  //Отсутп от начал 
+			element, 
+			type, // Стадия решения
+			answer; //Правильный ответ
 
 		switch(stageId){
 			case 1:
 				start = term1px;
 				shift = 0;
 				element = input1;
-				type = 'term1';
+				type = 'term1'; //Стадия нахождения првого слогаемого
 				answer = term1sm;
 			break;
 			case 2:
 				start = term2px;
 				shift = term1px;
 				element = input2;
-				type = 'term2';
+				type = 'term2'; //Стадия нахождения второго слогаемого
 				answer = term2sm;
 			break;
 			case 3:
 				element = input3;
-				type = 'summ';
+				type = 'summ'; //Стадия нахождения решения
 				answer = summSm;
 			break;
 			default:
 					return
 				break;
 		}
-		outputArr(start, shift, element);
-		element.addEventListener('input', function(){
-			verificationState(stageId, element, type, answer);
+		outputArr(start, shift, element); //Запускаем отрисовку инпута и стрелки
+		element.addEventListener('input', function(){ // Можно заменить на change, из условий точно не понятно как лучше
+			verificationState(stageId, element, type, answer); //Проверка стадии решения 
 		});
 	}
 
-	function verificationState(stageId, element, type, answer){
-		resultVerification = verificationValue(element.value, answer, type);
-		if (resultVerification == true){
+	function verificationState(stageId, element, type, answer){ //Проверка стадии решения
+		resultVerification = verificationValue(element.value, answer, type); //Проверка введенного ответа
+		if (resultVerification == true){ 
 			element.removeEventListener('input', function(){
 				verificationState(stageId, element, type, answer);
 			});
-			stageId ++;
-			console.log(stageId);
-			NextStage(stageId);
+			stageId ++; //Увеличеваем номер стадии 
+			NextStage(stageId); //Запускаем следующую стадию
 		}
 	}
 	term1sm = Math.floor(Math.random() * (10 - 6)) + 6; //генерируем первое слогаемое в сантиметрах
@@ -73,15 +72,15 @@ function startTest (){ //запуск теста
 	term2Condition.textContent = term2sm;// выводим второе слогаемое
 	
 
-	NextStage(stageId);
+	NextStage(stageId); //Запускаем первую стадию решения 
 }
 
+ 
+function outputArr (start, shift, input){ //Отрисовка функии 
+	var	marginSide = (start/2 - 10),  //Считаем отступ сверху/снизу от инпута 
+		marginBott = 234 - start/3.7; //Считаем отступ слева/справа от инпута 
 
-function outputArr (start, shift, input){
-	var	marginSide = (start/2 - 10),
-		marginBott = 234 - start/3.7;
-
-	function drawArr(start, shift){
+	function drawArr(start, shift){ //Функция отрисовки стрелки 
 		ctx.beginPath();
 		ctx.strokeStyle = '#cc0073';
 		ctx.lineWidth = 1.5;
@@ -93,61 +92,60 @@ function outputArr (start, shift, input){
 		ctx.closePath();
 		ctx.stroke();
 	};
-	if(input.id == 'summ-input'){
+
+	if(input.id == 'summ-input'){  //Если элемент интпут для ввода ответа выводм только его без стрелки и не меняем отсутп 
 		document.getElementById('summ-text').classList.toggle('task-list__item_visible');
 		input.classList.toggle('task-list__item_visible');
 	}
-	else {
-		drawArr(start, shift);
-		input.style.margin = marginBott + 'px ' +  marginSide + 'px ' + '-' + marginBott + "px";
-		input.classList.add('canvas-box__item_visible');
+	else { 
+		drawArr(start, shift);  //Выводим сттрелку 
+		input.style.margin = marginBott + 'px ' +  marginSide + 'px ' + '-' + marginBott + "px"; //Задаем отсутуп инпута 
+		input.classList.add('canvas-box__item_visible'); //Выводим инпут
 	}
 };
 
 
 
-function verificationValue (value, answer, type) {
-	var id, 
+function verificationValue (value, answer, type) { //Проверка ответа 
+	var id,  
 		element,
 		marginSide = answer*39/2 -10,
 		marginBott = 234 - answer*39/3.7;
 		console.log(value, answer);
-	function classToggle(element, classId){
+	function classToggle(element, classId){ //Функция переключения классов 
 		var	className;
-		className = element.classList[0] + classId;
-		switch(classId){
-
-		case '_visible':
+		className = element.classList[0] + classId; //Получаем класс элемента 
+		 //(Так как классы названы по БЭМ первый клас всегда название блока и элемента далее добовляем к нему название модификатора из classId)
+		switch(classId){  // В зависимости от идификатора класса преключаем/удаляем нужные 
+ 
+		case '_visible': //Класс убирает видимость блока 
 			console.log(classId)
 			element.classList.toggle(className);
 			console.log(className, element.className)
 			break;
-		case '_fixed-error': 
+		case '_fixed-error': //Клас исправленной ошибки 
 			className = element.classList[0] + '_output-error';
 			element.classList.remove(className);
 			break;
-		default:
+		default: //Все классы ошибок 
 			element.classList.add(className);
 			break;
 		}
 	}
-	console.log('start verification')
-	if (value == answer) {
-		id = type + "-input";
+	if (value == answer) { //Проверка верности ответа 
+		id = type + "-input"; //Плучем id элемента 
 		element = document.getElementById(id)
-		console.log(element, type, id);
-		classToggle(element, '_visible');
+		classToggle(element, '_visible'); //Запускаем переключение класа _visible
+		
 		id = type + "-text";
-
 		element = document.getElementById(id)
 		element.textContent = answer;
-		if(type != 'summ'){
+		if(type != 'summ'){ //Задаем отсуп для вывода правильного ответа 
 			element.style.margin = marginBott + 'px ' +  marginSide + 'px ' + '-' + marginBott + "px";
 
-		}
-		classToggle(element, '_visible');
-		console.log('verification true')
-		if(type != 'summ'){
+		} 
+		classToggle(element, '_visible'); 
+		if(type != 'summ'){ // выключаем подсветку ошибки 
 			id = type + '-task-text';
 			element = document.getElementById(id);
 			classToggle(element, '_fixed-error');
@@ -158,11 +156,11 @@ function verificationValue (value, answer, type) {
 		id = type + '-input';
 		console.log(id, typeof(id));
 		element = document.getElementById(id);
-		classToggle(element, '_input-error');
-		if (type != 'summ') {
+		classToggle(element, '_input-error'); // Меняем цвет текса ипута в случае ошибки на красный 
+		if (type != 'summ') { //Подсвечиваем ошибку в примере 
 			id = type + '-task-text';
 			element = document.getElementById(id);
-			classToggle(element, '_output-error');
+			classToggle(element, '_output-error'); 
 		}
 		return false;
 	}
