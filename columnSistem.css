@@ -1,0 +1,40 @@
+.row   {
+    display: flex;
+}
+
+.row__col1{
+    width: 8.3%;
+}
+.row__col2{
+    width: 16.6%;
+}
+.row__col3{
+    width: 25%;
+}
+.row__col4{
+    width: 33.2%;
+}
+.row__col5{
+    width: 41.6%;
+}
+.row__col6{
+    width: 50%;
+}
+.row__col7{
+    width: 58.1%;
+}
+.row__col8{
+    width: 66.4%;
+}
+.row__col9{
+    width: 75%;
+}
+.row__col10{
+    width: 83.3%;
+}
+.row__col11{
+    width: 91.3%;
+}
+.row__col12{
+    width: 100%;
+}
